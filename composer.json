@@ -1,0 +1,12 @@
+{
+  "name": "awaiswp/files-folder-excluder-for-aio-wp-migration",
+  "license": "GPL-3.0",
+  "require": {
+    "google/apiclient": "2.15.0"
+  },
+  "autoload": {
+    "psr-4": {
+      "AwaisWP\\Excluder\\": "src/"
+    }
+  }
+}
