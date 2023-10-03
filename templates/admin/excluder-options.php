@@ -88,12 +88,11 @@ use AwaisWP\Excluder\Admin\ExcluderOptions;
 
 		<p>
 			<?php echo __( 'Are you struggling to keep your WordPress website running smoothly? I offer a <b>monthly WordPress maintenance</b> service at an <b>incredibly reasonable price</b>.', 'ff_excluder-customization' ); ?>
-			<br/>
+			<br />
 
-		<?php echo __( 'Whether you need <i>regular updates, bug fixes, or simply want to ensure your website is always in top shape</i>, I\'ve got you covered.', 'ff_excluder-customization' ); ?><br/>
+			<?php echo __( 'Whether you need <i>regular updates, bug fixes, or simply want to ensure your website is always in top shape</i>, I\'ve got you covered.', 'ff_excluder-customization' ); ?><br />
 
-		<?php echo __( 'Don\'t let website issues hold you back.', 'ff_excluder-customization' ); ?> <a target="_blank"href="https://awaiswp.com/wordpress-maintenance-services/" class="button button-secondary"><?php echo __( 'Click Here</a> to get in touch with me and take the hassle out of WordPress maintenance today!', 'ff_excluder-customization' ); ?>
-	</p>
+			<?php echo __( 'Don\'t let website issues hold you back.', 'ff_excluder-customization' ); ?> <a target="_blank" href="https://awaiswp.com/wordpress-maintenance-services/" class="button button-secondary"><?php echo __( 'Click Here</a> to get in touch with me and take the hassle out of WordPress maintenance today!', 'ff_excluder-customization' ); ?>
+		</p>
 	</div>
 </div>
-

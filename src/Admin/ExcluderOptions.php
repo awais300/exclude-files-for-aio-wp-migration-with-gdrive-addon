@@ -3,18 +3,17 @@
 namespace AwaisWP\Excluder\Admin;
 
 use AwaisWP\Excluder\Excluder;
-use AwaisWP\Excluder\Singleton;
 use AwaisWP\Excluder\TemplateLoader;
 
-defined('ABSPATH') || exit;
+defined( 'ABSPATH' ) || exit;
 
 /**
  * Class ExcluderOptions
  * @package AwaisWP\Excluder
  */
 
-class ExcluderOptions
-{
+class ExcluderOptions {
+
 	/**
 	 * The content fields.
 	 *
@@ -68,26 +67,24 @@ class ExcluderOptions
 	/**
 	 * Construct the Excluder class.
 	 */
-	public function __construct()
-	{
+	public function __construct() {
 		$this->loader = TemplateLoader::get_instance();
-		add_action('admin_init', array($this, 'on_admin_init'));
-		add_action('admin_menu', array($this, 'admin_menu'));
+		add_action( 'admin_init', array( $this, 'on_admin_init' ) );
+		add_action( 'admin_menu', array( $this, 'admin_menu' ) );
 	}
 
 
 	/**
 	 * Save settings.
 	 */
-	public function on_admin_init()
-	{
-		if (isset($_POST['submit']) && $_POST['submit'] === 'Save Settings') {
-			if (!isset($_POST['excluder']) || !wp_verify_nonce($_POST['excluder'], 'excluder-nonce')) {
-				wp_die(__('Security check failed.', 'ff_excluder-customization'));
+	public function on_admin_init() {
+		if ( isset( $_POST['submit'] ) && $_POST['submit'] === 'Save Settings' ) {
+			if ( ! isset( $_POST['excluder'] ) || ! wp_verify_nonce( $_POST['excluder'], 'excluder-nonce' ) ) {
+				wp_die( __( 'Security check failed.', 'ff_excluder-customization' ) );
 				exit;
 			} else {
-				$new_values = array_map('sanitize_textarea_field', $_POST['awp_aio_excluder']);
-				update_option(self::EXCLUDER_SETTINGS, $new_values);
+				$new_values = array_map( 'sanitize_textarea_field', $_POST['awp_aio_excluder'] );
+				update_option( self::EXCLUDER_SETTINGS, $new_values );
 			}
 		}
 	}
@@ -98,41 +95,38 @@ class ExcluderOptions
 	 *
 	 * @return array
 	 */
-	public static function get_settings($type = null)
-	{
-		$settings = get_option(self::EXCLUDER_SETTINGS);
-		if (empty($type)) {
+	public static function get_settings( $type = null ) {
+		$settings = get_option( self::EXCLUDER_SETTINGS );
+		if ( empty( $type ) ) {
 			return $settings;
-		} elseif (isset($settings[$type])) {
-			$arr = explode("\n", $settings[$type]);
-			return array_map('sanitize_text_field', $arr);
+		} elseif ( isset( $settings[ $type ] ) ) {
+			$arr = explode( "\n", $settings[ $type ] );
+			return array_map( 'sanitize_text_field', $arr );
 		} else {
-			throw new \Exception(__('Missing type', 'ff_excluder-customization'));
+			throw new \Exception( __( 'Missing type', 'ff_excluder-customization' ) );
 		}
 	}
 
 	/**
 	 * Registers a new settings page under Settings.
 	 */
-	function admin_menu()
-	{
-		add_menu_page('AIO WP Migration Tools', 'AIO WP Migration Tools', 'manage_options', ExcluderOptions::PAGE_SLUG);
+	function admin_menu() {
+		add_menu_page( 'AIO WP Migration Tools', 'AIO WP Migration Tools', 'manage_options', ExcluderOptions::PAGE_SLUG );
 		add_submenu_page(
 			ExcluderOptions::PAGE_SLUG,
 			'AIO WP Migration Excluder',
 			'AIO WP Migration Excluder',
 			'manage_options',
 			ExcluderOptions::PAGE_SLUG,
-			array($this, 'settings_page')
+			array( $this, 'settings_page' )
 		);
 	}
 
 	/**
 	 * Settings page display callback.
 	 */
-	function settings_page()
-	{
-		$settings = get_option(self::EXCLUDER_SETTINGS);
+	function settings_page() {
+		$settings = get_option( self::EXCLUDER_SETTINGS );
 		$data     = array(
 			'settings' => $settings,
 		);

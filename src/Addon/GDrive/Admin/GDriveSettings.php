@@ -5,15 +5,15 @@ namespace AwaisWP\Excluder\Addon\GDrive\Admin;
 use AwaisWP\Excluder\TemplateLoader;
 use AwaisWP\Excluder\Admin\ExcluderOptions;
 
-defined('ABSPATH') || exit;
+defined( 'ABSPATH' ) || exit;
 
 /**
  * Class GDriveSettings
  * @package AwaisWP\Excluder\Addon\GDrive
  */
 
-class GDriveSettings
-{
+class GDriveSettings {
+
 
 	/**
 	 * The page slug.
@@ -41,25 +41,23 @@ class GDriveSettings
 	/**
 	 * Construct the Excluder class.
 	 */
-	public function __construct()
-	{
+	public function __construct() {
 		$this->loader = TemplateLoader::get_instance();
-		add_action('admin_init', array($this, 'on_admin_init'));
-		add_action('admin_menu', array($this, 'admin_menu'));
+		add_action( 'admin_init', array( $this, 'on_admin_init' ) );
+		add_action( 'admin_menu', array( $this, 'admin_menu' ) );
 	}
 
 	/**
 	 * Save settings.
 	 */
-	public function on_admin_init()
-	{
-		if (isset($_POST['submit']) && $_POST['submit'] === 'Save') {
-			if (!isset($_POST['gdrive']) || !wp_verify_nonce($_POST['gdrive'], 'gdrive-nonce')) {
-				wp_die(__('Security check failed.', 'ff_excluder-customization'));
+	public function on_admin_init() {
+		if ( isset( $_POST['submit'] ) && $_POST['submit'] === 'Save' ) {
+			if ( ! isset( $_POST['gdrive'] ) || ! wp_verify_nonce( $_POST['gdrive'], 'gdrive-nonce' ) ) {
+				wp_die( __( 'Security check failed.', 'ff_excluder-customization' ) );
 				exit;
 			} else {
-				$new_values = array_map('sanitize_text_field', $_POST['awp_aio_gdrive']);
-				update_option(self::GDRIVE_SETTINGS, $new_values);
+				$new_values = array_map( 'sanitize_text_field', $_POST['awp_aio_gdrive'] );
+				update_option( self::GDRIVE_SETTINGS, $new_values );
 			}
 		}
 	}
@@ -67,24 +65,22 @@ class GDriveSettings
 	/**
 	 * Registers a new settings page under Settings.
 	 */
-	function admin_menu()
-	{
+	function admin_menu() {
 		add_submenu_page(
 			ExcluderOptions::PAGE_SLUG,
 			'GDrive Settings',
 			'GDrive Settings',
 			'manage_options',
 			self::PAGE_SLUG,
-			array($this, 'settings_page')
+			array( $this, 'settings_page' )
 		);
 	}
 
 	/**
 	 * Settings page display callback.
 	 */
-	public function settings_page()
-	{
-		$settings = get_option(self::GDRIVE_SETTINGS);
+	public function settings_page() {
+		$settings = get_option( self::GDRIVE_SETTINGS );
 		$data     = array(
 			'settings' => $settings,
 		);
@@ -101,19 +97,18 @@ class GDriveSettings
 	 * Get list of backup files.
 	 **/
 	public static function get_aio_backup_list() {
-		return glob(WP_CONTENT_DIR . '/ai1wm-backups/*.wpress');
+		return glob( WP_CONTENT_DIR . '/ai1wm-backups/*.wpress' );
 	}
-	
+
 	/**
 	 * Get human readable size of the file.
 	 * @param  int  $size
 	 * @param  int $precision
 	 * @return string
 	 */
-	public static function readable_size($size, $precision = 2)
-	{
-		$base = log($size, 1024);
-		$suffixes = array('B', 'KB', 'MB', 'GB', 'TB');
-		return round(pow(1024, $base - floor($base)), $precision) . ' ' . $suffixes[floor($base)];
+	public static function readable_size( $size, $precision = 2 ) {
+		 $base    = log( $size, 1024 );
+		$suffixes = array( 'B', 'KB', 'MB', 'GB', 'TB' );
+		return round( pow( 1024, $base - floor( $base ) ), $precision ) . ' ' . $suffixes[ floor( $base ) ];
 	}
 }

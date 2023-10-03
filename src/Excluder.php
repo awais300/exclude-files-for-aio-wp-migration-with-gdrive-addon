@@ -13,6 +13,7 @@ use AwaisWP\Excluder\Admin\ExcluderOptions;
 
 class Excluder {
 
+
 	/**
 	 * Construct the Excluder class.
 	 */
@@ -47,7 +48,7 @@ class Excluder {
 	 * @return array
 	 */
 	public function exclude_media_from_export( $exclude_filters ) {
-		 $lines = array_filter( ExcluderOptions::get_settings( ExcluderOptions::FIELD_MEDIA ) );
+		$lines = array_filter( ExcluderOptions::get_settings( ExcluderOptions::FIELD_MEDIA ) );
 
 		if ( ! empty( $lines ) ) {
 			foreach ( $lines as $line ) {

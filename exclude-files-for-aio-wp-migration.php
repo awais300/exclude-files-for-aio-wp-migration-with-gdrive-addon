@@ -1,7 +1,7 @@
 <?php
 
 /**
- * Plugin Name: Exclude Files & Folders for AIO WP Migration
+ * Plugin Name: Exclude Files & Folders for AIO WP Migration with GDrive addon.
  * Description: This add-on will allow admin users to add exclude paths with-in wp-content, uploads, plugins and themes directores for All-in-One WP Migration plugin.
  * Author: Muhammad Awais
  * Author URI: https://awaiswp.com

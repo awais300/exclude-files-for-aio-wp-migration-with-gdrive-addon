@@ -10,8 +10,6 @@ defined( 'ABSPATH' ) || exit;
  */
 
 class TemplateLoader extends Singleton {
-
-
 	/**
 	 * Loads a template.
 	 *
