@@ -15,6 +15,11 @@ use AwaisWP\Excluder\Addon\GDrive\Admin\GDriveSettings;
 				?>
 				<p><?php echo __( 'Authentication Successful ' . $logout_link, 'ff_excluder-customization' ); ?></p>
 			</div>
+
+		<?php elseif ( ! empty( $error ) ) : ?>
+			<div class="notice notice-warning notice-alt">
+				<p><?php echo $error; ?></p>
+			</div>
 		<?php else : ?>
 			<a class="login" href="<?php echo @$auth_url; ?>">Connect Me!</a>
 		<?php endif; ?>
@@ -22,7 +27,7 @@ use AwaisWP\Excluder\Addon\GDrive\Admin\GDriveSettings;
 
 	<!-- <a href="#" id="mybtn">Ajax Test</a> -->
 
-	<?php if ( isset( $_SESSION['save_token'] ) ) : ?>
+	<?php if ( isset( $_SESSION['save_token'] ) && $error == '' ) : ?>
 		<div class="field">
 			<table class="form-table">
 				<tr>
@@ -54,13 +59,13 @@ use AwaisWP\Excluder\Addon\GDrive\Admin\GDriveSettings;
 							<?php endforeach; ?>
 						</select>
 						<input type="checkbox" <?php echo ( isset( $_GET['custom_path'] ) ) ? 'checked' : ''; ?> id="check-custom-path" value=""><span>
-														  <?php
-															_e(
-																'I want to upload different file',
-																'ff_excluder-customization'
-															);
-															?>
-																																					</span>
+							<?php
+							_e(
+								'I want to upload different file',
+								'ff_excluder-customization'
+							);
+							?>
+						</span>
 					</td>
 				</tr>
 
@@ -99,9 +104,6 @@ use AwaisWP\Excluder\Addon\GDrive\Admin\GDriveSettings;
 					$gdrive->fileRequest = $fullPath;
 					$gdrive->folderId    = $folderId;
 					$gdrive->initialize();
-
-					echo '<br/>';
-					echo __( 'File Uploaded!', 'ff_excluder-customization' );
 				}
 				?>
 			</div>

@@ -15,6 +15,7 @@ defined( 'ABSPATH' ) || exit;
 
 class GDrive extends Singleton {
 
+
 	private $clientId     = null;
 	private $clientSecret = null;
 	private $redirectUri  = null;
@@ -28,7 +29,7 @@ class GDrive extends Singleton {
 	private $client;
 
 	public function __construct() {
-		$settings = get_option( GDriveSettings::GDRIVE_SETTINGS );
+		 $settings = get_option( GDriveSettings::GDRIVE_SETTINGS );
 
 		$this->clientId     = $settings['client_id'];
 		$this->clientSecret = $settings['secret_key'];
@@ -42,21 +43,28 @@ class GDrive extends Singleton {
 	 *
 	 **/
 	function initialize() {
-		 echo 'Initializing uploading...' . '<br/>';
+		try {
+			$this->display( 'Initializing uploading...' );
 
-		$client = $this->client;
+			$client = $this->client;
 
-		$client->setClientId( $this->clientId );
-		$client->setClientSecret( $this->clientSecret );
-		$client->setRedirectUri( $this->redirectUri );
+			$client->setClientId( $this->clientId );
+			$client->setClientSecret( $this->clientSecret );
+			$client->setRedirectUri( $this->redirectUri );
 
-		$refreshToken = file_get_contents( FF_EXCLUDER_CUST_PLUGIN_DIR_PATH . '/token/token.txt' );
-		$client->refreshToken( $refreshToken );
-		$tokens = $client->getAccessToken();
-		$client->setAccessToken( $tokens );
+			$refreshToken = file_get_contents( FF_EXCLUDER_CUST_PLUGIN_DIR_PATH . '/token/token.txt' );
+			$client->refreshToken( $refreshToken );
+			$tokens = $client->getAccessToken();
+			$client->setAccessToken( $tokens );
 
-		$client->setDefer( true );
-		$this->processFile();
+			$client->setDefer( true );
+			$this->processFile();
+		} catch ( \Exception $e ) {
+			$message = $e->getMessage();
+			$this->display( $message );
+			$this->display( 'Exiting...' );
+			exit();
+		}
 	}
 
 	/**
@@ -64,8 +72,8 @@ class GDrive extends Singleton {
 	 *
 	 **/
 	public function processFile() {
-		$fileRequest = $this->fileRequest;
-		echo "Process File: $fileRequest" . '<br/>';
+		 $fileRequest = $this->fileRequest;
+		$this->display( "Process File: $fileRequest" );
 
 		$path_parts     = pathinfo( $fileRequest );
 		$this->path     = $path_parts['dirname'];
@@ -75,7 +83,7 @@ class GDrive extends Singleton {
 		$this->mimeType = finfo_file( $finfo, $fileRequest );
 		finfo_close( $finfo );
 
-		echo 'Mime type is: ' . $this->mimeType . '<br/>';
+		$this->display( 'Mime type is: ' . $this->mimeType );
 		$this->upload();
 	}
 
@@ -121,7 +129,7 @@ class GDrive extends Singleton {
 		$media->setFileSize( filesize( $filePath ) );
 
 		// Start uploading.
-		echo 'Uploading...: ' . $this->fileName . '<br/>';
+		$this->display( 'Uploading...: ' . $this->fileName );
 
 		// Upload the various chunks. $status will be false until the process is complete.
 		$status = false;
@@ -137,9 +145,30 @@ class GDrive extends Singleton {
 			$result = $status;
 		}
 		fclose( $handle );
+		$this->display( 'File uploaded!' );
 
 		// Reset to the client to execute requests immediately in the future.
 		$client->setDefer( false );
 		//dd($result);
+	}
+
+	/**
+	 * Display message on browser.
+	 * @param string $message
+	 * @param bool $flush
+	 **/
+	public function display( $message = '', $flush = true ) {
+		echo $message . '<br/>';
+		if ( $flush === true ) {
+			$this->flush_output();
+		}
+	}
+
+	/**
+	 * Try to flush output buffer to browser.
+	 **/
+	public function flush_output() {
+		wp_ob_end_flush_all();
+		flush();
 	}
 }
