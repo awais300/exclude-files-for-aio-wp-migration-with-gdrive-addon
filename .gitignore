@@ -1,5 +1,4 @@
 /vendor
 /.idea
 .DS_Store
-/token/token.txt
 composer.lock
