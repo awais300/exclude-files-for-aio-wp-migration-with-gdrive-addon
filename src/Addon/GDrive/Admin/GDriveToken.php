@@ -18,6 +18,7 @@ class GDriveToken {
 
 
 
+
 	/**
 	 * The page slug.
 	 *
@@ -55,7 +56,10 @@ class GDriveToken {
 	 * Register PHP session.
 	 **/
 	public function register_session() {
-		ob_start();
+		if ( php_sapi_name() != 'cli' ) {
+			ob_start();
+		}
+
 		if ( session_status() == PHP_SESSION_NONE ) {
 			session_start();
 		}

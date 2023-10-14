@@ -16,6 +16,7 @@ defined( 'ABSPATH' ) || exit;
 class GDrive extends Singleton {
 
 
+
 	private $clientId     = null;
 	private $clientSecret = null;
 	private $redirectUri  = null;
@@ -131,12 +132,19 @@ class GDrive extends Singleton {
 		// Start uploading.
 		$this->display( 'Uploading...: ' . $this->fileName );
 
+		if ( $this->is_cli() ) {
+			$progress = \WP_CLI\Utils\make_progress_bar( 'Uploading Progress', $this->get_total_ticks( $filePath, $chunkSizeBytes ) );
+		}
+
 		// Upload the various chunks. $status will be false until the process is complete.
 		$status = false;
 		$handle = fopen( $filePath, 'rb' );
 		while ( ! $status && ! feof( $handle ) ) {
 			$chunk  = fread( $handle, $chunkSizeBytes );
 			$status = $media->nextChunk( $chunk );
+			if ( $this->is_cli() ) {
+				$progress->tick();
+			}
 		}
 
 		// The final value of $status will be the data from the API for the object that has been uploaded.
@@ -145,6 +153,9 @@ class GDrive extends Singleton {
 			$result = $status;
 		}
 		fclose( $handle );
+		if ( $this->is_cli() ) {
+			$progress->finish();
+		}
 		$this->display( 'File uploaded!' );
 
 		// Reset to the client to execute requests immediately in the future.
@@ -158,9 +169,13 @@ class GDrive extends Singleton {
 	 * @param bool $flush
 	 **/
 	public function display( $message = '', $flush = true ) {
-		echo $message . '<br/>';
-		if ( $flush === true ) {
-			$this->flush_output();
+		if ( $this->is_cli() ) {
+			\WP_CLI::line( $message );
+		} else {
+			echo $message . '<br/>';
+			if ( $flush === true ) {
+				$this->flush_output();
+			}
 		}
 	}
 
@@ -170,5 +185,25 @@ class GDrive extends Singleton {
 	public function flush_output() {
 		wp_ob_end_flush_all();
 		flush();
+	}
+
+	/**
+	 * Get total chunks of file based on its chunck size.
+	 **/
+	public function get_total_ticks( $file, $chunk_size ) {
+		$file_size = filesize( $file );
+		$count     = $file_size / $chunk_size;
+		return $count;
+	}
+
+	/**
+	 * Check if you are CLI mode.
+	 **/
+	public function is_cli() {
+		if ( php_sapi_name() === 'cli' ) {
+			return true;
+		} else {
+			return false;
+		}
 	}
 }

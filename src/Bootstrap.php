@@ -6,6 +6,7 @@ use AwaisWP\Excluder\Admin\ExcluderOptions;
 use AwaisWP\Excluder\Addon\GDrive\Admin\GDriveSettings;
 use AwaisWP\Excluder\Addon\GDrive\Admin\GDriveToken;
 use AwaisWP\Excluder\Addon\GDrive\Admin\GDriveAjax;
+use AwaisWP\Excluder\Addon\GDrive\Admin\GDriveWPCli;
 
 defined( 'ABSPATH' ) || exit;
 
@@ -98,6 +99,7 @@ class Bootstrap {
 		new GDriveSettings();
 		new GDriveToken();
 		//new GDriveAjax();
+		new GDriveWPCli();
 	}
 
 	/**
