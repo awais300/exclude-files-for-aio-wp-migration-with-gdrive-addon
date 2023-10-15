@@ -23,7 +23,14 @@ class GDriveWPCli {
 	private $gdrive = null;
 
 	/**
-	 * Construct the Excluder class.
+	 * The command name
+	 *
+	 * @var gdrive
+	 */
+	private $command_name = 'gd-upload';
+
+	/**
+	 * Construct the class.
 	 */
 	public function __construct() {
 		 $this->gdrive = GDrive::get_instance();
@@ -33,8 +40,33 @@ class GDriveWPCli {
 	/**
 	 * Register WP CLI command.
 	 **/
-	function wp_cli_register_commands() {
-		\WP_CLI::add_command( 'gd upload', array( $this, 'upload' ) );
+	public function wp_cli_register_commands() {
+		\WP_CLI::add_command( $this->command_name, array( $this, 'upload' ), $this->get_command_arguments() );
+	}
+
+	/**
+	 * Get WP CLI arguments.
+	 **/
+	public function get_command_arguments() {
+		return array(
+			'shortdesc' => 'Upload file to a Google Drive.',
+			'synopsis'  => array(
+				array(
+					'type'        => 'assoc',
+					'name'        => 'file',
+					'description' => 'Full path to the file',
+					'optional'    => false,
+
+				),
+				array(
+					'type'        => 'assoc',
+					'name'        => 'gdrive_folder_id',
+					'description' => 'Google Drive folder ID.',
+					'optional'    => false,
+
+				),
+			),
+		);
 	}
 
 	/**
@@ -63,12 +95,12 @@ class GDriveWPCli {
 	public function validate_arguments( $path = '', $gd_folder_id = '' ) {
 		if ( ! is_file( $path ) || ! file_exists( $path ) ) {
 			//if (0) {
-			\WP_CLI::line( 'Please provide the correct path of file' );
+			\WP_CLI::error_multi_line( array( 'Please provide the correct path of file.' ) );
 			$this->help();
 		}
 
 		if ( empty( $gd_folder_id ) || is_bool( $gd_folder_id ) ) {
-			\WP_CLI::line( 'Please provide the Google Drive folder ID' );
+			\WP_CLI::error_multi_line( array( 'Please provide the Google Drive folder ID.' ) );
 			$this->help();
 		}
 
@@ -80,7 +112,7 @@ class GDriveWPCli {
 	 */
 	public function help() {
 		\WP_CLI::line( 'Site root path is: ' . ABSPATH );
-		\WP_CLI::line( 'Example: wp gd upload --file=paht/to/file --gdrive_folder_id=folder_id' );
+		\WP_CLI::line( "Usage: {$this->command_name} --file=paht/to/file --gdrive_folder_id=folder_id" );
 		exit;
 	}
 }
